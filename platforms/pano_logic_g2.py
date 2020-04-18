@@ -24,8 +24,8 @@ _io = [
     # NET "DDC1_SCK" LOC = C14 | IOSTANDARD = LVCMOS33;
     # NET "DDC1_SDA" LOC = C17 | IOSTANDARD = LVCMOS33;
     ("serial", 0,
-        Subsignal("tx", Pins("C14"), IOStandard("LVCMOS33")),
-        Subsignal("rx", Pins("C17"), IOStandard("LVCMOS33"))
+        Subsignal("tx", Pins("AB19"), IOStandard("LVCMOS33")),
+        Subsignal("rx", Pins("AA21"), IOStandard("LVCMOS33"))
     ),
 
     # NET "GMII_RST_N" LOC = R11 | IOSTANDARD = LVCMOS33;
@@ -163,6 +163,14 @@ _io = [
         # NET "DDR2B_ODT" LOC = J6 | IOSTANDARD = LVCMOS18;
         Subsignal("odt", Pins("J6"), IOStandard("SSTL18_II")),
     ),
+    ## onBoard SPI Flash
+    ("spiflash", 0,
+        Subsignal("cs_n", Pins("T5"), IOStandard("LVCMOS33")),
+        Subsignal("clk",  Pins("Y21"), IOStandard("LVCMOS33")),
+        Subsignal("mosi", Pins("AB20"), IOStandard("LVCMOS33")),
+        Subsignal("miso", Pins("AA20"), IOStandard("LVCMOS33"))
+    ),
+
 ]
 
 # Platform -----------------------------------------------------------------------------------------
@@ -171,6 +179,17 @@ class Platform(XilinxPlatform):
     name = "pano logic g2"
     default_clk_name = "clk125"
     default_clk_period = 1e9/125e6
+
+    # actual .bit file size rounded up to next flash erase boundary
+    gateware_size = 0x420000
+
+    # Micron M25P128
+    spiflash_model = "m25p128"
+    spiflash_read_dummy_bits = 8
+    spiflash_clock_div = 4
+    spiflash_total_size = int((128/8)*1024*1024) # 128Mbit/16Mbyte
+    spiflash_page_size = 256
+    spiflash_sector_size = 0x20000
 
     def __init__(self, programmer="impact", device="xc6slx150"):
         XilinxPlatform.__init__(self, device+"-2-fgg484", _io)

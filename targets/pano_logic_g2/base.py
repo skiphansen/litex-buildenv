@@ -27,6 +27,7 @@ class BaseSoC(SoCSDRAM):
         dict_set_max(kwargs, 'integrated_rom_size', 0x8000)
         dict_set_max(kwargs, 'integrated_sram_size', 0x8000)
 
+        clk_freq = int(125e6)
         sys_clk_freq = int(50e6)
         # SoCSDRAM ---------------------------------------------------------------------------------
         SoCSDRAM.__init__(self, platform, clk_freq=sys_clk_freq, **kwargs)

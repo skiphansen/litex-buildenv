@@ -180,7 +180,7 @@ _io = [
     ("eth", 0,
         # NET "phyrst"    LOC = "G13"; # Bank = 1, Pin name = IO_L32N_A16_M1A9,    Sch name = E-RESET
         #dummy! - ("user_led", 2, Pins("F13"),  IOStandard("LVCMOS33")),
-        # Subsignal("rst_n", Pins("F13")),
+        Subsignal("user_led", Pins("F13")),
 
         # NET "phyint"    LOC = "L16"; # Bank = 1, Pin name = IO_L42N_GCLK6_TRDY1_M1LDM, Sch name = E-INT
         # Subsignal("int_n", Pins("L16")), ??
@@ -265,6 +265,7 @@ class Platform(XilinxPlatform):
             raise ValueError("Unsupported uart_connection \"{}\", available \"dvi\", \"hdmi\"".format(uart_connection))
 
         XilinxPlatform.__init__(self, device+"-2-fgg484", _io)
+        self.toolchain.bitgen_opt += " -g Compress -g ConfigRate:25"
         self.programmer = programmer
 
         self.add_platform_command("""CONFIG VCCAUX="2.5";""")

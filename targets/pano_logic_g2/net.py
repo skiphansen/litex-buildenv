@@ -13,10 +13,6 @@ class NetSoC(BaseSoC):
     }}
 
     def __init__(self, platform, *args, **kwargs):
-        # Need a larger integrated ROM on or1k to fit the BIOS with TFTP support.
-        if kwargs.get('cpu_type', 'lm32') != 'lm32':
-            dict_set_max(kwargs, 'integrated_rom_size', 0x10000)
-
         BaseSoC.__init__(self, platform, *args, **kwargs)
 
         # Ethernet ---------------------------------------------------------------------------------
@@ -47,13 +43,26 @@ class NetSoC(BaseSoC):
             self.ethphy.crg.cd_eth_tx.clk)
 
     def configure_iprange(self, iprange):
-        iprange = [int(x) for x in iprange.split(".")]
-        while len(iprange) < 4:
-            iprange.append(0)
-        # Our IP address
-        self._configure_ip("LOCALIP", iprange[:-1]+[50])
-        # IP address of tftp host
-        self._configure_ip("REMOTEIP", iprange[:-1]+[100])
+        if not "," in iprange:
+            iprange = [int(x) for x in iprange.split(".")]
+            while len(iprange) < 4:
+                iprange.append(0)
+            # Our IP address
+            self._configure_ip("LOCALIP", iprange[:-1]+[50])
+            # IP address of tftp host
+            self._configure_ip("REMOTEIP", iprange[:-1]+[100])
+        else:
+            ipstrings = iprange.split(",")
+            iprange = [int(x) for x in ipstrings[0].split(".")]
+            while len(iprange) < 4:
+                iprange.append(0)
+            # Our IP address
+            self._configure_ip("LOCALIP", iprange)
+            iprange = [int(x) for x in ipstrings[1].split(".")]
+            while len(iprange) < 4:
+                iprange.append(0)
+            # IP address of tftp host
+            self._configure_ip("REMOTEIP", iprange)
 
     def _configure_ip(self, ip_type, ip):
         for i, e in enumerate(ip):

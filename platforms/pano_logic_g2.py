@@ -13,7 +13,7 @@ _io = [
     # NET "led_green" LOC = F13 | IOSTANDARD = LVCMOS33;
     ("user_led", 0, Pins("E12"), IOStandard("LVCMOS33")),
     ("user_led", 1, Pins("H13"),  IOStandard("LVCMOS33")),
-    ("user_led", 2, Pins("F13"),  IOStandard("LVCMOS33")),
+    #("user_led", 2, Pins("F13"),  IOStandard("LVCMOS33")),
 
     # NET "pano_button" LOC = H12 | IOSTANDARD = LVCMOS33;
     ("user_sw", 0, Pins("H12"), IOStandard("LVCMOS33")),
@@ -156,6 +156,70 @@ _io = [
         # NET "DDR2B_ODT" LOC = J6 | IOSTANDARD = LVCMOS18;
         Subsignal("odt", Pins("J6"), IOStandard("SSTL18_II")),
     ),
+    ## onBoard SPI Flash
+    ("spiflash", 0,
+        Subsignal("cs_n", Pins("T5"), IOStandard("LVCMOS33")),
+        Subsignal("clk",  Pins("Y21"), IOStandard("LVCMOS33")),
+        Subsignal("mosi", Pins("AB20"), IOStandard("LVCMOS33")),
+        Subsignal("miso", Pins("AA20"), IOStandard("LVCMOS33"))
+    ),
+    ## TEMAC Ethernet MAC - FIXME
+    # 10/100/1000 Ethernet PHY
+    # 88E111-B2-RCJ1-C000 - Marvell Alaska Tri-mode PHY (the 88E1111)
+    # paired with a Halo HFJ11-1G01E RJ-45 connector
+    # Runs from 1.2V power supply
+    ("eth_clocks", 0,
+        # NET "mii_tx_clk_i" LOC = Y11  | IOSTANDARD = LVCMOS33;
+        Subsignal("tx", Pins("Y11")),
+        # NET "gmii_gtx_clk_o" LOC = AA12 | IOSTANDARD = LVCMOS33;
+        Subsignal("gtx", Pins("AA12")),
+        # NET "mii_rx_clk_i" LOC = AB11 | IOSTANDARD = LVCMOS33;
+        Subsignal("rx", Pins("AB11")),
+        IOStandard("LVCMOS33")
+    ),
+    ("eth", 0,
+        # NET "phyrst"    LOC = "G13"; # Bank = 1, Pin name = IO_L32N_A16_M1A9,    Sch name = E-RESET
+        #dummy! - ("user_led", 2, Pins("F13"),  IOStandard("LVCMOS33")),
+        Subsignal("user_led", Pins("F13")),
+
+        # NET "phyint"    LOC = "L16"; # Bank = 1, Pin name = IO_L42N_GCLK6_TRDY1_M1LDM, Sch name = E-INT
+        # Subsignal("int_n", Pins("L16")), ??
+        # NET "mdio_io" LOC = AA2 | IOSTANDARD = LVCMOS33;
+        Subsignal("mdio", Pins("AA2")),
+        # NET "mdc_o" LOC = AB6 | IOSTANDARD = LVCMOS33;
+        Subsignal("mdc", Pins("AB6")),
+        # NET "mii_rx_dv_i" LOC = Y7    | IOSTANDARD = LVCMOS33;
+        Subsignal("rx_dv", Pins("Y7")),
+        # NET "mii_rx_er_i" LOC = Y8    | IOSTANDARD = LVCMOS33;
+        Subsignal("rx_er", Pins("Y8")),
+        # NET "mii_rxd_i[0]" LOC = Y3 | IOSTANDARD = LVCMOS33;
+        # NET "mii_rxd_i[1]" LOC = Y4 | IOSTANDARD = LVCMOS33;
+        # NET "mii_rxd_i[2]" LOC = R9 | IOSTANDARD = LVCMOS33;
+        # NET "mii_rxd_i[3]" LOC = R7 | IOSTANDARD = LVCMOS33;
+        # NET "mii_rxd_i[4]" LOC = V9 | IOSTANDARD = LVCMOS33;
+        # NET "mii_rxd_i[5]" LOC = R8 | IOSTANDARD = LVCMOS33;
+        # NET "mii_rxd_i[6]" LOC = U9 | IOSTANDARD = LVCMOS33;
+        # NET "mii_rxd_i[7]" LOC = Y9 | IOSTANDARD = LVCMOS33;
+        Subsignal("rx_data", Pins("Y3 Y4 R9 R7 V9 R8 U9 Y9")),
+        # NET "mii_tx_en_o" LOC = AA8 | IOSTANDARD = LVCMOS33;
+        Subsignal("tx_en", Pins("AA8")),
+        # NET "mii_tx_er_o" LOC = AB8 | IOSTANDARD = LVCMOS33;
+        Subsignal("tx_er", Pins("AB8")),
+        # NET "mii_txd_o[0]" LOC = AB2 | IOSTANDARD = LVCMOS33;
+        # NET "mii_txd_o[1]" LOC = AB3 | IOSTANDARD = LVCMOS33;
+        # NET "mii_txd_o[2]" LOC = AB4 | IOSTANDARD = LVCMOS33;
+        # NET "mii_txd_o[3]" LOC = AB7 | IOSTANDARD = LVCMOS33;
+        # NET "mii_txd_o[4]" LOC = AB9 | IOSTANDARD = LVCMOS33;
+        # NET "mii_txd_o[5]" LOC = AB10 | IOSTANDARD = LVCMOS33;
+        # NET "mii_txd_o[6]" LOC = T7   | IOSTANDARD = LVCMOS33;
+        # NET "mii_txd_o[7]" LOC = Y10  | IOSTANDARD = LVCMOS33;
+        Subsignal("tx_data", Pins("AB2 AB3 AB4 AB7 AB9 AB10 T7 Y10")),
+        # C17 - from Atlys reference manual, not listed in UCF file?
+        #Subsignal("col", Pins("C17")),
+        # C18 - from Atlys reference manual, not listed in UCF file?
+        #Subsignal("crs", Pins("C18")),
+        IOStandard("LVCMOS33")
+    ),
 ]
 
 _hdmi_serial = (
@@ -181,6 +245,17 @@ class Platform(XilinxPlatform):
     default_clk_name = "clk125"
     default_clk_period = 1e9/125e6
 
+    # actual .bit file size rounded up to next flash erase boundary
+    gateware_size = 0x420000
+
+    # Micron M25P128
+    spiflash_model = "m25p128"
+    spiflash_read_dummy_bits = 8
+    spiflash_clock_div = 4
+    spiflash_total_size = int((128/8)*1024*1024) # 128Mbit/16Mbyte
+    spiflash_page_size = 256
+    spiflash_sector_size = 0x20000
+
     def __init__(self, programmer="impact", device="xc6slx150", uart_connection="dvi"):
         if uart_connection == 'dvi':
             _io.append(_dvi_serial)
@@ -190,6 +265,7 @@ class Platform(XilinxPlatform):
             raise ValueError("Unsupported uart_connection \"{}\", available \"dvi\", \"hdmi\"".format(uart_connection))
 
         XilinxPlatform.__init__(self, device+"-2-fgg484", _io)
+        self.toolchain.bitgen_opt += " -g Compress -g ConfigRate:25"
         self.programmer = programmer
 
         self.add_platform_command("""CONFIG VCCAUX="2.5";""")

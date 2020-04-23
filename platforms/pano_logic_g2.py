@@ -209,6 +209,7 @@ class Platform(XilinxPlatform):
             raise ValueError("Unsupported uart_connection \"{}\", available \"dvi\", \"hdmi\"".format(uart_connection))
 
         XilinxPlatform.__init__(self, device+"-2-fgg484", _io)
+        self.toolchain.bitgen_opt += " -g Compress -g ConfigRate:25"
         self.programmer = programmer
 
         self.add_platform_command("""CONFIG VCCAUX="2.5";""")

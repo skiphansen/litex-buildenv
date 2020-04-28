@@ -175,7 +175,7 @@ if [ ${CPU} = vexriscv ]; then
 
 		# this is a temp fix for building the emulator
 		cd $TOP_DIR/third_party/litex/litex/soc/cores/cpu/vexriscv/verilog/ext/VexRiscv
-		git am $TOP_DIR/patches/0001-emulator-Use-external-hw-common.h-from-LiteX.patch
+		#git am $TOP_DIR/patches/0001-emulator-Use-external-hw-common.h-from-LiteX.patch
 
 		cd $TOP_DIR/third_party/litex/litex/soc/cores/cpu/vexriscv/verilog/ext/VexRiscv/src/main/c/emulator
 

@@ -13,7 +13,7 @@ _io = [
     # NET "led_green" LOC = F13 | IOSTANDARD = LVCMOS33;
     ("user_led", 0, Pins("E12"), IOStandard("LVCMOS33")),
     ("user_led", 1, Pins("H13"),  IOStandard("LVCMOS33")),
-    #("user_led", 2, Pins("F13"),  IOStandard("LVCMOS33")),
+    ("user_led", 2, Pins("F13"),  IOStandard("LVCMOS33")),
 
     # NET "pano_button" LOC = H12 | IOSTANDARD = LVCMOS33;
     ("user_sw", 0, Pins("H12"), IOStandard("LVCMOS33")),
@@ -259,8 +259,13 @@ class Platform(XilinxPlatform):
     default_clk_name = "clk125"
     default_clk_period = 1e9/125e6
 
-    # actual .bit file size rounded up to next 64k boundary
-    gateware_size = 0x410000
+    flavor = os.environ.get('FIRMWARE', 'firmware')
+    if flavor == 'linux':
+        # leave room for emulator and DTS file in the .bit file partition
+        gateware_size = 0x410000
+    else:
+        # actual .bit file size rounded up to next flash erase boundary
+        gateware_size = 0x440000
 
     # Micron M25P128
     spiflash_model = "m25p128"

@@ -40,3 +40,6 @@
 [submodule "third_party/liteiclink"]
 	path = third_party/liteiclink
 	url = https://github.com/enjoy-digital/liteiclink.git
+[submodule "third_party/liteeth"]
+	path = third_party/liteeth
+	url = https://github.com/skiphansen/liteeth.git

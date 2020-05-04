@@ -699,5 +699,6 @@ echo "-----------------------"
 echo ""
 echo "Completed.  To load environment:"
 echo "source $SETUP_DIR/enter-env.sh"
-touch .env_setup
+# Set a flag indicating successfully script completion
+touch ${BUILD_DIR}/.env_downloaded
 

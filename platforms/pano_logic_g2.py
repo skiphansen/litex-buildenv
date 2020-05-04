@@ -178,10 +178,6 @@ _io = [
         IOStandard("LVCMOS33")
     ),
     ("eth", 0,
-        # NET "phyrst"    LOC = "G13"; # Bank = 1, Pin name = IO_L32N_A16_M1A9,    Sch name = E-RESET
-        #dummy! - ("user_led", 2, Pins("F13"),  IOStandard("LVCMOS33")),
-        Subsignal("user_led", Pins("F13")),
-
         # NET "phyint"    LOC = "L16"; # Bank = 1, Pin name = IO_L42N_GCLK6_TRDY1_M1LDM, Sch name = E-INT
         # Subsignal("int_n", Pins("L16")), ??
         # NET "mdio_io" LOC = AA2 | IOSTANDARD = LVCMOS33;

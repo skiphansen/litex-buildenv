@@ -21,13 +21,13 @@ fi
 
 if [ -z "$HDMI2USB_ENV" ]; then
         echo "You appear to not be inside the HDMI2USB environment."
-	echo "Please enter environment with:"
-	echo "  source scripts/enter-env.sh"
+        echo "Please enter environment with:"
+        echo "  source scripts/enter-env.sh"
         exit 1
 fi
 
 # Imports TARGET, PLATFORM, CPU and TARGET_BUILD_DIR from Makefile
-eval $(make env)
+eval $(make --silent env)
 make info
 
 set -x
@@ -40,23 +40,23 @@ fi
 
 # Install a toolchain with the newlib standard library
 if ! ${CPU_ARCH}-elf-newlib-gcc --version > /dev/null 2>&1; then
-	conda install gcc-${CPU_ARCH}-elf-newlib
+        conda install gcc-${CPU_ARCH}-elf-newlib
 fi
 
 # Get micropython is needed
 MPY_SRC_DIR=$TOP_DIR/third_party/micropython
 if [ ! -d "$MPY_SRC_DIR" ]; then
-	(
-		cd $(dirname $MPY_SRC_DIR)
-		git clone https://github.com/fupy/micropython.git
-		cd $MPY_SRC_DIR
-		git submodule update --init
-	)
+        (
+                cd $(dirname $MPY_SRC_DIR)
+                git clone https://github.com/fupy/micropython.git
+                cd $MPY_SRC_DIR
+                git submodule update --init
+        )
 fi
 
 # Generate the bios and local firmware
 if [ ! -d $TARGET_BUILD_DIR/software/include/generated ]; then
-	make firmware
+        make firmware
 fi
 
 # Copy in some litex platform specific files that MicroPython may need
@@ -66,24 +66,24 @@ fi
 LITEX_INCLUDE_BASE="$PWD/third_party/litex/litex/soc/software/include/base"
 
 for FILE in system.h csr-defs.h spr-defs.h; do
-	cp -p "$LITEX_INCLUDE_BASE/$FILE" "$TARGET_BUILD_DIR/software/include"
+        cp -p "$LITEX_INCLUDE_BASE/$FILE" "$TARGET_BUILD_DIR/software/include"
 done
 
 # Setup the micropython build directory
 TARGET_MPY_BUILD_DIR=$TARGET_BUILD_DIR/software/micropython
 if [ ! -e "$TARGET_MPY_BUILD_DIR/generated" ]; then
-	mkdir -p $TARGET_MPY_BUILD_DIR
-	(
-		cd $TARGET_MPY_BUILD_DIR
-		ln -s $(realpath $PWD/../../software/include/generated) generated
-	)
+        mkdir -p $TARGET_MPY_BUILD_DIR
+        (
+                cd $TARGET_MPY_BUILD_DIR
+                ln -s $(realpath $PWD/../../software/include/generated) generated
+        )
 fi
 
 if [ ! -e "$TARGET_MPY_BUILD_DIR/hw" ]; then
-	(
-		cd $TARGET_MPY_BUILD_DIR
-		ln -s $(realpath $PWD/../../../../third_party/litex/litex/soc/software/include/hw) hw
-	)
+        (
+                cd $TARGET_MPY_BUILD_DIR
+                ln -s $(realpath $PWD/../../../../third_party/litex/litex/soc/software/include/hw) hw
+        )
 fi
 TARGET_MPY_BUILD_DIR="$(realpath $TARGET_BUILD_DIR/software/micropython)"
 
@@ -97,6 +97,6 @@ make V=1 -C $(realpath ../../../../third_party/micropython/ports/fupy/) -j$JOBS
 cd $OLD_DIR
 
 if [ -z "$SKIP_IMAGE" ]; then
-	# Generate a firmware image suitable for flashing.
-	make image
+        # Generate a firmware image suitable for flashing.
+        make image
 fi

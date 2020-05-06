@@ -226,6 +226,7 @@ TARGET_LINUX_BUILD_DIR=$(dirname $TOP_DIR/$FIRMWARE_FILEBASE)
 
 BD_REMOTE="${BD_REMOTE:-https://github.com/buildroot/buildroot.git}"
 BD_SRC="$TOP_DIR/third_party/buildroot"
+BD_COMMIT="a5c711d671efc73e17e26e47743d8e99df1198fa"
 LLV_REMOTE="${LLV_REMOTE:-https://github.com/litex-hub/linux-on-litex-vexriscv.git}"
 LLV_SRC="$TOP_DIR/third_party/linux-on-litex-vexriscv"
 if [ ${CPU} = vexriscv ] && [ ${BUILD_BUILDROOT:-0} = 1 ]; then
@@ -234,7 +235,9 @@ if [ ${CPU} = vexriscv ] && [ ${BUILD_BUILDROOT:-0} = 1 ]; then
                 (
                         cd $(dirname $BD_SRC)
                         echo "Downloading Buildroot code."
-                        git clone $BD_REMOTE $BD_SRC
+                        git clone $BD_REMOTE $BD_SRC 
+                        cd $BD_SRC
+                        git checkout $BD_COMMIT
                 )
                 fi
 

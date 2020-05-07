@@ -23,7 +23,7 @@ gateware-load-$(PLATFORM):
 	./load.py ise
 
 ifeq ($(FIRMWARE),linux)
-GATEWARE_BIN = $(TARGET_BUILD_DIR)gateware+emulator+dtb.bin
+GATEWARE_BIN = $(TARGET_BUILD_DIR)/gateware+emulator+dtb.bin
 
 $(GATEWARE_BIN): $(GATEWARE_FILEBASE).bin $(DTB_FBI) $(EMULATOR_FBI)
 	# note: emulator and DTB are flash with gateware to save flash space
@@ -33,8 +33,10 @@ $(GATEWARE_BIN): $(GATEWARE_FILEBASE).bin $(DTB_FBI) $(EMULATOR_FBI)
 
 gateware-flash-$(PLATFORM): $(GATEWARE_BIN)
 	# note: emulator and DTB are flash with gateware to save flash space
-	@echo "Flashing $(GATEWARE_BIN) @ 0x9c0000"
+ifeq ($(DUMMY_FLASH),)
+	@echo "Flashing $(notdir($(GATEWARE_BIN)) @ 0"
 	$(PYTHON) flash.py --mode=other --other-file $(GATEWARE_BIN) --address 0
+endif
 	@true
 else
 gateware-flash-$(PLATFORM): gateware-flash-py
@@ -82,3 +84,4 @@ help-$(PLATFORM):
 reset-$(PLATFORM):
 	@echo "Unsupported"
 	@false
+

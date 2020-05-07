@@ -141,7 +141,7 @@ ifeq ($(shell [ $(JOBS) -gt 1 ] && echo true),true)
     export MAKEFLAGS="-j $(JOBS) -l $(JOBS)"
 endif
 
-TARGET_BUILD_DIR = build/$(FULL_PLATFORM)_$(TARGET)_$(FULL_CPU)/
+TARGET_BUILD_DIR = build/$(FULL_PLATFORM)_$(TARGET)_$(FULL_CPU)
 
 GATEWARE_FILEBASE = $(TARGET_BUILD_DIR)/gateware/top
 BIOS_FILE = $(TARGET_BUILD_DIR)/software/bios/bios.bin

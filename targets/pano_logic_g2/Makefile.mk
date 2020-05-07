@@ -23,7 +23,7 @@ gateware-load-$(PLATFORM):
 	./load.py ise
 
 ifeq ($(FIRMWARE),linux)
-GATEWARE_BIN = $(TARGET_BUILD_DIR)/gateware+emulator+dtb.bin
+GATEWARE_BIN = $(TARGET_BUILD_DIR)gateware+emulator+dtb.bin
 
 $(GATEWARE_BIN): $(GATEWARE_FILEBASE).bin $(DTB_FBI) $(EMULATOR_FBI)
 	# note: emulator and DTB are flash with gateware to save flash space

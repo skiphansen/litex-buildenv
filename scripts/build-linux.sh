@@ -226,7 +226,7 @@ TARGET_LINUX_BUILD_DIR=$(dirname $TOP_DIR/$FIRMWARE_FILEBASE)
 
 BD_REMOTE="${BD_REMOTE:-https://github.com/buildroot/buildroot.git}"
 BD_SRC="$TOP_DIR/third_party/buildroot"
-BD_COMMIT="a5c711d671efc73e17e26e47743d8e99df1198fa"
+BD_COMMIT="2020.02.1"
 LLV_REMOTE="${LLV_REMOTE:-https://github.com/litex-hub/linux-on-litex-vexriscv.git}"
 LLV_SRC="$TOP_DIR/third_party/linux-on-litex-vexriscv"
 if [ ${CPU} = vexriscv ] && [ ${BUILD_BUILDROOT:-0} = 1 ]; then
@@ -281,7 +281,9 @@ else
                         make O="$TARGET_LINUX_BUILD_DIR" litex_defconfig
                 elif [ ${CPU} = vexriscv ]; then
 
-                        fetch_file $ROOTFS_LOCATION/litex_vexriscv_linux.config $CONFIG_MD5 $TARGET_LINUX_BUILD_DIR/.config
+                        #fetch_file $ROOTFS_LOCATION/litex_vexriscv_linux.config $CONFIG_MD5 $TARGET_LINUX_BUILD_DIR/.config
+                        #sh: use local linux .config
+                        cp configs/litex_vexriscv_linux.config $TARGET_LINUX_BUILD_DIR/.config
 
                         fetch_file $ROOTFS_LOCATION/$DTB_MD5-rv32.dtb $DTB_MD5 $TARGET_LINUX_BUILD_DIR/rv32.dtb
 

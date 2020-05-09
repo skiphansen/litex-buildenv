@@ -229,6 +229,7 @@ BD_SRC="$TOP_DIR/third_party/buildroot"
 BD_COMMIT="2020.02.1"
 LLV_REMOTE="${LLV_REMOTE:-https://github.com/litex-hub/linux-on-litex-vexriscv.git}"
 LLV_SRC="$TOP_DIR/third_party/linux-on-litex-vexriscv"
+LLV_COMMIT="9e2964fc5423cb7fb1b098b9fa66d36224871f72"
 if [ ${CPU} = vexriscv ] && [ ${BUILD_BUILDROOT:-0} = 1 ]; then
         (
                 if [ ! -d "$BD_SRC" ]; then
@@ -246,6 +247,7 @@ if [ ${CPU} = vexriscv ] && [ ${BUILD_BUILDROOT:-0} = 1 ]; then
                         cd $(dirname $LLV_SRC)
                         echo "Downloading Linux on LiteX-VexRiscv code."
                         git clone $LLV_REMOTE $LLV_SRC
+                        (cd $LLV_SRC; git checkout $LLV_COMMIT)
                 )
                 fi
 

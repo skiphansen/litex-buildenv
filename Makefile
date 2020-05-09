@@ -212,22 +212,6 @@ FIRMWARE_FBI?=$(FIRMWARE_FILEBASE).fbi
 endif
 endif
 
-ifeq ($(FIRMWARE),linux)
-# Linux Image component files - kernel+emulator+dts+rootfs
-    define fbi_rule
-        $(1): $(subst .fbi,,$(1))
-    endef
-    
-    BUILDROOT_IMAGES = third_party/buildroot/output/images
-    KERNEL_FBI   = $(BUILDROOT_IMAGES)/Image.fbi
-    ROOTFS_FBI   = $(BUILDROOT_IMAGES)/rootfs.cpio.fbi
-    EMULATOR_FBI = $(TARGET_BUILD_DIR)/emulator/emulator.bin.fbi
-    DTB_FBI      = $(FIRMWARE_DIR)/rv32.dtb.fbi
-    FIRMWARE_FBI = $(KERNEL_FBI) $(ROOTFS_FBI) $(EMULATOR_FBI) $(DTB_FBI)
-    
-    $(foreach file,$(FIRMWARE_FBI),$(eval $(call fbi_rule,$(file))))
-endif
-
 $(IMAGE_FILE): $(GATEWARE_FILEBASE).bin $(BIOS_FILE) $(FIRMWARE_FBI)
 	$(PYTHON) mkimage.py \
 		$(MISOC_EXTRA_CMDLINE) $(LITEX_EXTRA_CMDLINE) $(MAKE_LITEX_EXTRA_CMDLINE) \

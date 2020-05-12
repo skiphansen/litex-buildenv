@@ -48,8 +48,8 @@ $(GATEWARE_BIN): $(GATEWARE_FILEBASE).bin $(DTB_FBI) $(EMULATOR_FBI)
 	dd if=$(DTB_FBI) bs=16K conv=sync >> $@
 	cat $(EMULATOR_FBI) >> $@
 
+# note: emulator and DTB are flashed with gateware to save flash space
 gateware-flash-$(PLATFORM): $(GATEWARE_BIN)
-	# note: emulator and DTB are flash with gateware to save flash space
 ifeq ($(DUMMY_FLASH),)
 	@echo "Flashing $(notdir( $(GATEWARE_BIN))) @ 0"
 	$(PYTHON) flash.py --mode=other --other-file $(GATEWARE_BIN) --address 0

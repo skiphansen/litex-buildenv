@@ -226,10 +226,8 @@ TARGET_LINUX_BUILD_DIR=$(dirname $TOP_DIR/$FIRMWARE_FILEBASE)
 
 BD_REMOTE="${BD_REMOTE:-https://github.com/buildroot/buildroot.git}"
 BD_SRC="$TOP_DIR/third_party/buildroot"
-BD_COMMIT="2020.02.1"
 LLV_REMOTE="${LLV_REMOTE:-https://github.com/litex-hub/linux-on-litex-vexriscv.git}"
 LLV_SRC="$TOP_DIR/third_party/linux-on-litex-vexriscv"
-LLV_COMMIT="9e2964fc5423cb7fb1b098b9fa66d36224871f72"
 if [ ${CPU} = vexriscv ] && [ ${BUILD_BUILDROOT:-0} = 1 ]; then
         (
                 if [ ! -d "$BD_SRC" ]; then
@@ -238,7 +236,9 @@ if [ ${CPU} = vexriscv ] && [ ${BUILD_BUILDROOT:-0} = 1 ]; then
                         echo "Downloading Buildroot code."
                         git clone $BD_REMOTE $BD_SRC 
                         cd $BD_SRC
-                        git checkout $BD_COMMIT
+                        if [ x$BD_COMMIT != x ]; then
+                            git checkout $BD_COMMIT
+                        fi
                 )
                 fi
 
@@ -247,7 +247,9 @@ if [ ${CPU} = vexriscv ] && [ ${BUILD_BUILDROOT:-0} = 1 ]; then
                         cd $(dirname $LLV_SRC)
                         echo "Downloading Linux on LiteX-VexRiscv code."
                         git clone $LLV_REMOTE $LLV_SRC
-                        (cd $LLV_SRC; git checkout $LLV_COMMIT)
+                        if [ x$LLV_COMMIT != x ]; then
+                            (cd $LLV_SRC; git checkout $LLV_COMMIT)
+                        fi
                 )
                 fi
 
@@ -263,7 +265,12 @@ if [ ${CPU} = vexriscv ] && [ ${BUILD_BUILDROOT:-0} = 1 ]; then
                 dtc -I dts -O dtb -o $TARGET_LINUX_BUILD_DIR/rv32.dtb $TARGET_LINUX_BUILD_DIR/rv32.dts
 
                 cd $BD_SRC
-                make BR2_EXTERNAL=$LLV_SRC/buildroot/ litex_vexriscv_defconfig
+                if [ "x$BR2_EXTERNAL" = "x" ]; then
+                    make BR2_EXTERNAL=$LLV_SRC/buildroot/ litex_vexriscv_defconfig
+                else
+                    make litex_vexriscv_defconfig
+                fi
+
                 time make
                 ls -l $BD_SRC/output/images/
                 ln -sf $BD_SRC/output/images/Image $TOP_DIR/$FIRMWARE_FILEBASE.bin
@@ -283,9 +290,7 @@ else
                         make O="$TARGET_LINUX_BUILD_DIR" litex_defconfig
                 elif [ ${CPU} = vexriscv ]; then
 
-                        #fetch_file $ROOTFS_LOCATION/litex_vexriscv_linux.config $CONFIG_MD5 $TARGET_LINUX_BUILD_DIR/.config
-                        #sh: use local linux .config
-                        cp configs/litex_vexriscv_linux.config $TARGET_LINUX_BUILD_DIR/.config
+                        fetch_file $ROOTFS_LOCATION/litex_vexriscv_linux.config $CONFIG_MD5 $TARGET_LINUX_BUILD_DIR/.config
 
                         fetch_file $ROOTFS_LOCATION/$DTB_MD5-rv32.dtb $DTB_MD5 $TARGET_LINUX_BUILD_DIR/rv32.dtb
 
